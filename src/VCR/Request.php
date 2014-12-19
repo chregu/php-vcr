@@ -11,7 +11,7 @@ use Guzzle\Http\Message\PostFile;
 class Request extends EntityEnclosingRequest
 {
     /**
-     * Returns true if specified request maches the current one
+     * Returns true if specified request matches the current one
      * with specified request matcher callbacks.
      *
      * @param  Request      $request         Request to check if it matches the current one.
