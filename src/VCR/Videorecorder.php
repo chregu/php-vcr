@@ -170,15 +170,16 @@ class Videorecorder
                 . "VCR::insertCassette('name');"
             );
         }
-
-        if (!$this->cassette->hasResponse($request)) {
+        $response = $this->cassette->playback($request);
+        if ($response === null) {
             $this->disableLibraryHooks();
             $response = $this->client->send($request);
             $this->cassette->record($request, $response);
             $this->enableLibraryHooks();
+            return $response;
         }
 
-        return $this->cassette->playback($request);
+        return $response;
     }
 
     /**

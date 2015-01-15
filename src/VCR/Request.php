@@ -138,6 +138,10 @@ class Request extends EntityEnclosingRequest
             $request['headers']
         );
 
+        if (isset($request['body'])) {
+            $requestObject->setBody($request['body']);
+        }
+
         if (!empty($request['post_fields']) && is_array($request['post_fields'])) {
             $requestObject->addPostFields($request['post_fields']);
         }

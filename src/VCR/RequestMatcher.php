@@ -90,7 +90,13 @@ class RequestMatcher
      */
     public static function matchBody(Request $first, Request $second)
     {
-        if (null !== $first->getBody() && (string) $first->getBody() != (string) $second->getBody() ) {
+        if (null === $second->getBody() && null === $first->getBody()) {
+            return true;
+        }
+        if (null === $second->getBody() || null === $first->getBody()) {
+            return false;
+        }
+        if ((string) $first->getBody() != (string) $second->getBody() ) {
             return false;
         }
 
