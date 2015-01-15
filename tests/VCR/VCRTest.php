@@ -2,7 +2,7 @@
 
 namespace VCR;
 
-use Guzzle\Http\Client;
+use org\bovigo\vfs\vfsStream;
 
 /**
  * Test integration of PHPVCR with PHPUnit.
@@ -32,19 +32,6 @@ class VCRTest extends \PHPUnit_Framework_TestCase
         VCR::insertCassette('unittest_streamwrapper_test');
         $result = file_get_contents('http://example.com');
         $this->assertEquals('This is a stream wrapper test dummy.', $result, 'Stream wrapper call was not intercepted.');
-        VCR::eject();
-        VCR::turnOff();
-    }
-
-    public function testShouldInterceptGuzzleLibrary()
-    {
-        VCR::configure()->enableLibraryHooks(array('curl'));
-        VCR::turnOn();
-        VCR::insertCassette('unittest_guzzle_test');
-        $client = new Client();
-        $client->setUserAgent(false);
-        $response = $client->post('http://example.com')->send();
-        $this->assertEquals('This is a guzzle test dummy.', (string) $response->getBody(), 'Guzzle call was not intercepted.');
         VCR::eject();
         VCR::turnOff();
     }
@@ -81,6 +68,8 @@ class VCRTest extends \PHPUnit_Framework_TestCase
 
     public function testInsertMultipleCassettes()
     {
+        $this->configureVirtualCassette();
+
         VCR::turnOn();
         VCR::insertCassette('unittest_cassette1');
         VCR::insertCassette('unittest_cassette2');
@@ -89,10 +78,18 @@ class VCRTest extends \PHPUnit_Framework_TestCase
 
     public function testDoesNotBlockThrowingExceptions()
     {
+        $this->configureVirtualCassette();
+
         VCR::turnOn();
         $this->setExpectedException('InvalidArgumentException');
         VCR::insertCassette('unittest_cassette1');
         throw new \InvalidArgumentException('test');
+    }
+
+    private function configureVirtualCassette()
+    {
+        vfsStream::setup('testDir');
+        VCR::configure()->setCassettePath(vfsStream::url('testDir'));
     }
 
     public function testShouldSetAConfiguration()
