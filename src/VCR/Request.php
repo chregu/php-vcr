@@ -46,6 +46,8 @@ class Request
         $this->method = $method;
         $this->headers = $headers;
         $this->setUrl($url);
+        /*$this->setCurlOption(CURLOPT_PROXY,"tcp://192.168.50.28:8888");
+        $this->setCurlOption(CURLOPT_SSL_VERIFYPEER, false);*/
     }
 
     /**
@@ -269,6 +271,11 @@ class Request
     public function setBody($body)
     {
         $this->body = $body;
+    }
+
+    public function setAuth($username, $password)
+    {
+        $this->setHeader('Authorization', 'Basic ' . base64_encode($username . ':' . $password));
     }
 
     /**
